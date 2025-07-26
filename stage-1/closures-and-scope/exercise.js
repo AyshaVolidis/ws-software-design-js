@@ -20,7 +20,7 @@ var inc = 1;
  * increment(2); // returns 3
  */
 function increment (n) {
-  // fill in ...
+  return n + inc;
 }
 
 
@@ -34,7 +34,9 @@ function increment (n) {
  * incBy2(2); // returns 4
  */
 function createIncrementer (base) {
-  // fill in ...
+  return function incByNum(num){
+    return num+base
+  }
 }
 
 
@@ -53,8 +55,17 @@ function createIncrementer (base) {
  */
 function createCounter () {
   // fill in ...
-}
+  let value=0
 
+  let obj={
+    read:function(){return value},
+    inc:function(){value++; return value+1},
+    dec:function(){value--; return value-1}
+  }
+
+  return obj
+
+}
 
 module.exports = {
   increment,
