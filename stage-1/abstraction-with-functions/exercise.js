@@ -19,54 +19,38 @@
  */
 'use strict';
 
-function capitaliseObjectKeys (input) {
+
+const itareteObj=(input,callback)=>{
   const keys = Object.keys(input);
   const result = {};
-
-  for (var ii = 0; ii < keys.length; ii++) {
-    const capitalisedKey = keys[ii].slice(0, 1).toUpperCase().concat(keys[ii].slice(1));
-    result[capitalisedKey] = input[keys[ii]];
+  for(let key of keys){
+    const[newKey,newValue]=callback(key,input[key])
+    result[newKey]=newValue
   }
-
-  return result;
+  return result
 }
+
+const captilize=(str)=>{
+  return str.slice(0, 1).toUpperCase().concat(str.slice(1));
+}
+
+function capitaliseObjectKeys (input) {
+  return itareteObj(input,(key,value)=>[captilize(key),value]);
+}
+
 
 
 function capitaliseObjectValues (input) {
-  const keys = Object.keys(input);
-  const result = {};
-
-  for (var ii = 0; ii < keys.length; ii++) {
-    const value = input[keys[ii]];
-    const capitalisedValue = value.slice(0, 1).toUpperCase().concat(value.slice(1));
-    result[keys[ii]] = capitalisedValue;
-  }
-
-  return result;
+  return itareteObj(input,(key,value)=>[key,captilize(value)]);
 }
 
+
 function incrementObjectValues (input) {
-  const keys = Object.keys(input);
-  const result = {};
-
-  for (var ii = 0; ii < keys.length; ii++) {
-    const value = input[keys[ii]];
-    result[keys[ii]] = value + 1;
-  }
-
-  return result;
+  return itareteObj(input,(key,value)=>[key,value+1])
 }
 
 function reverseObjectKeys (input) {
-  const keys = Object.keys(input);
-  const result = {};
-
-  for (var ii = 0; ii < keys.length; ii++) {
-    const reversedKey = keys[ii].split('').reverse().join('');
-    result[reversedKey] = input[keys[ii]];
-  }
-
-  return result;
+  return itareteObj(input,(key,value)=>[key.split('').reverse().join(''),value])
 }
 
 module.exports = {
