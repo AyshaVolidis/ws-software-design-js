@@ -5,7 +5,7 @@
  *   npm run s2.modules
  * This will run a series of tests which should all pass.
  */
-'use strict';
+"use strict";
 
 /*
  * Create a single module (using an IIFE) which contains functionality to parse
@@ -18,23 +18,26 @@
  * | protocol |     |    domain      |   | path |  | querystring |
  */
 var UrlParser = (function () {
-  // fill in ...
-
   return {
-    // a function that takes a URL and returns its protocol
-    protocol: null,
+    protocol: function (url) {
+      return url.split(":")[0];
+    },
 
-    // a function that takes a URL and returns its domain
-    domain: null,
+    domain: function (url) {
+      return url.split("/")[2];
+    },
 
-    // a function that takes a URL and returns its path
-    path: null,
+    path: function (url) {
+      const parts = url.split("/");
+      return parts[3] ? parts[3].split("?")[0] : "";
+    },
 
-    // a function that takes a URL and returns its query string
-    querystring: null,
+    querystring: function (url) {
+      const index = url.indexOf("?");
+      return index !== -1 ? url.slice(index + 1) : "";
+    },
   };
-});
-
+})();
 
 /*
  * Create a module that can support multiple instances (like in our example).
@@ -53,11 +56,50 @@ var UrlParser = (function () {
 var createUrlBuilder = function (host) {
   // fill in ...
 
-  var builder = function () {}
+  var builder = function (parts) {
+    var url = host;
+    if (parts.path) {
+      url += `/${parts.path}`;
+    }
+
+    if (parts.query) {
+      var queryParts = [];
+
+      for (var key in parts.query) {
+        if (parts.query.hasOwnProperty(key)) {
+          queryParts.push(
+            encodeURIComponent(key) + "=" + encodeURIComponent(parts.query[key])
+          );
+        }
+      }
+
+      if (queryParts.length > 0) {
+        url += "?" + queryParts.join("&");
+      }
+    }
+    return url;
+  };
+
+  builder.path = function (path) {
+    return `${host}/${path}`;
+  };
+
+  builder.query = function (query) {
+    var queryParts = [];
+
+    for (var key in query) {
+      if (query.hasOwnProperty(key)) {
+        queryParts.push(
+          encodeURIComponent(key) + "=" + encodeURIComponent(query[key])
+        );
+      }
+    }
+
+    return queryParts.length > 0 ? `${host}?${queryParts.join("&")}` : host;
+  };
 
   return builder;
 };
-
 
 module.exports = {
   UrlParser,
